@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
         <head>
-            <title>Single Family Home</title>
+            <title>IsEven</title>
         </head>
     <body>
         <?php
