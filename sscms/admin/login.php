@@ -78,7 +78,7 @@ echo "<script>alert('Invalid Details');</script>";
                 </div>
                
                 <div class="text-center mt-4 font-weight-light">
-                  Don't have an account? <a href="register.html" class="text-primary">Create</a>
+                  Don't have an account? <a href="register.php" class="text-primary">Create</a>
                 </div>
               </form>
             </div>

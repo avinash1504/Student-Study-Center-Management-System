@@ -3,30 +3,48 @@ session_start();
 error_reporting(0);
 include('includes/dbconnection.php');
 
+
+//add user
 if(isset($_POST['submit']))
-  {
-    $email=$_POST['email'];
-$mobile=$_POST['mobile'];
-$newpassword=md5($_POST['newpassword']);
-  $sql ="SELECT Email FROM tbladmin WHERE Email=:email and MobileNumber=:mobile";
-$query= $dbh -> prepare($sql);
-$query-> bindParam(':email', $email, PDO::PARAM_STR);
-$query-> bindParam(':mobile', $mobile, PDO::PARAM_STR);
-$query-> execute();
-$results = $query -> fetchAll(PDO::FETCH_OBJ);
-if($query -> rowCount() > 0)
 {
-$con="update tbladmin set Password=:newpassword where Email=:email and MobileNumber=:mobile";
-$chngpwd1 = $dbh->prepare($con);
-$chngpwd1-> bindParam(':email', $email, PDO::PARAM_STR);
-$chngpwd1-> bindParam(':mobile', $mobile, PDO::PARAM_STR);
-$chngpwd1-> bindParam(':newpassword', $newpassword, PDO::PARAM_STR);
-$chngpwd1->execute();
-echo "<script>alert('Your Password succesfully changed');</script>";
+    echo'<scipt>alert("Inside")</script>';
+    $email = $_POST['Email'];
+    $mobile = $_POST['MobileNumber'];
+    $Address = $_POST['Address'];
+    $UserName = $_POST['UserName'];
+    $AdminName = $_POST['UserName'];
+    $newpassword = md5($_POST['Password']);
+  $date = date('Y-m-d H:i:s');
+    // echo($email);
+    // echo($mobile);
+    // echo($Address);
+    // echo($UserName);
+    // echo($AdminName);
+    // echo($newpassword);
+    // echo($date);
+    
+$sql="insert into tbladmin(AdminName,UserName,MobileNumber,Address,Email,Password,AdminRegdate)values(:AdminName,:UserName,:mobile,:Address,:email,:newpassword,:date)";
+$query=$dbh->prepare($sql);
+$query->bindParam(':AdminName',$UserName,PDO::PARAM_STR);
+$query->bindParam(':UserName',$UserName,PDO::PARAM_STR);
+$query->bindParam(':mobile',$mobile,PDO::PARAM_STR);
+$query->bindParam(':Address',$Address,PDO::PARAM_STR);
+$query->bindParam(':email',$email,PDO::PARAM_STR);
+$query->bindParam(':newpassword',$newpassword,PDO::PARAM_STR);
+$query->bindParam(':date',$date,PDO::PARAM_STR);
+$query->execute();
+
+ $LastInsertId=$dbh->lastInsertId();
+ if ($LastInsertId>0) {
+  echo '<script>alert("User created added successfully")</script>';
+echo "<script>window.location.href ='login.php'</script>";
 }
-else {
-echo "<script>alert('Email id or Mobile no is invalid');</script>"; 
-}
+else
+  {
+       echo '<script>alert("Something Went Wrong. Please try again")</script>';
+  }
+
+
 }
 
 ?>
@@ -76,35 +94,37 @@ return true;
         
                 <div class="row">
                             <div class="col-12 text-center">
-                                <h6 class="text-muted text-uppercase mt-5 ml-3">RECOVER PASSWORD</h6>
+                                <h6 class="text-muted text-uppercase mt-5 ml-3">REGISTER USER</h6>
                             </div>
                 </div>
               </div>
-              <p>Enter your email address and mobile number to reset password!</p>
-              <form  class="m-t-20" action="" method="post"method="post" name="chngpwd" onSubmit="return valid();">
-                <div class="form-group">
-                  <input type="email" class="form-control form-control-lg" id="email" name="email" required="true" placeholder="Email">
+              <!-- <p>Enter your email address and mobile number to reset password!</p> -->
+              <form  class="m-t-20" action="#" method="post">
+              <div class="form-group">
+                  <input type="text" class="form-control form-control-lg"  name="UserName" required="true" placeholder="User Name">
                 </div>
                 <div class="form-group">
-                  <input type="text" class="form-control form-control-lg" id="mobile" name="mobile" required="true" placeholder="Mobile Number" maxlength="10" pattern="[0-9]+">
+                  <input type="email" class="form-control form-control-lg"  name="Email" required="true" placeholder="Email">
                 </div>
                 <div class="form-group">
-                  <input type="password" class="form-control form-control-lg" id="newpassword" name="newpassword" required="true" placeholder="New Password">
+                  <input type="text" class="form-control form-control-lg"  name="MobileNumber" required="true" placeholder="Mobile Number" maxlength="10" pattern="[0-9]+">
                 </div>
                 <div class="form-group">
-                  <input type="password" class="form-control form-control-lg" id="confirmpassword" name="confirmpassword" required="true" placeholder="Confirm Password">
+                  <input type="password" class="form-control form-control-lg"  name="Password" required="true" placeholder="Password">
+                </div>
+                <div class="form-group">
+                  <input type="text" class="form-control form-control-lg"  name="Address" required="true" placeholder="Address">
                 </div>
                 <div class="mt-3">
-                  <button type="submit" name="submit" class="btn btn-success btn-block waves-effect waves-light btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn" >Reset</button>
-                </div>
-                <div class="my-2 d-flex justify-content-between align-items-center">
-                  <a href="login.php" class="auth-link text-black">Already have an account ? SIGN IN </a>
+                  <button type="submit" name="submit" class="btn btn-success btn-block waves-effect waves-light btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn" >CREATE ACCOUNT</button>
                 </div>
                
-                <div class="text-center mt-4 font-weight-light">
-                  Don't have an account? <a href="register.php" class="text-primary">Create</a>
-                </div>
+               
+                
               </form>
+              <div class="my-2 d-flex justify-content-between align-items-center">
+                  <a href="login.php" class="auth-link text-black">Already have an account ? SIGN IN </a>
+                </div>
             </div>
           </div>
         </div>
