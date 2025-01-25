@@ -1,0 +1,296 @@
+# Detailed Notes on Linked Lists, Trees, and Backtracking
+
+These notes are designed to teach you everything you need to know about **Linked Lists**, **Trees**, and **Backtracking** from basic to advanced concepts. By the end of this, you'll feel confident in solving problems on these topics.
+
+---
+
+## 1. **Linked Lists**
+
+### What is a Linked List?
+A **Linked List** is a sequence of nodes where each node contains:
+1. **Data**: The value stored in the node.
+2. **Pointer (or Reference)**: A reference to the next node in the list.
+
+Unlike arrays, elements in a linked list are not stored in continuous memory locations. Instead, each node points to the next, forming a chain.
+
+### Types of Linked Lists
+1. **Singly Linked List**: Each node points to the next node in one direction.
+   ```
+   Head -> Node1 -> Node2 -> Node3 -> null
+   ```
+2. **Doubly Linked List**: Each node points to both the next and previous nodes.
+   ```
+   null <- Node1 <-> Node2 <-> Node3 -> null
+   ```
+3. **Circular Linked List**: The last node points back to the first node, forming a circle.
+   ```
+   Node1 -> Node2 -> Node3 -> Node1
+   ```
+
+### Basic Operations
+
+#### 1. **Traversing a Linked List**
+   **Goal**: Visit every node in the list.
+
+   **Steps**:
+   - Start from the **head** node.
+   - Print or process the data of the current node.
+   - Move to the next node using the pointer/reference.
+   - Stop when you reach `null` (end of the list).
+
+   **Code (Singly Linked List)**:
+   ```java
+   Node current = head; // Start at the head node
+   while (current != null) {
+       System.out.println(current.data); // Process data
+       current = current.next; // Move to the next node
+   }
+   ```
+
+#### 2. **Inserting a Node**
+   **Goal**: Add a new node to the list.
+
+   **Steps for inserting at the beginning**:
+   1. Create a new node.
+   2. Point the new node’s `next` to the current `head`.
+   3. Update the `head` to the new node.
+
+   **Code**:
+   ```java
+   Node newNode = new Node(data); // Create new node
+   newNode.next = head; // Point to old head
+   head = newNode; // Update head
+   ```
+
+   **Steps for inserting at the end**:
+   1. Create a new node.
+   2. Traverse to the last node.
+   3. Point the last node’s `next` to the new node.
+
+   **Code**:
+   ```java
+   Node newNode = new Node(data);
+   if (head == null) { // If list is empty
+       head = newNode;
+   } else {
+       Node current = head;
+       while (current.next != null) {
+           current = current.next;
+       }
+       current.next = newNode; // Add at the end
+   }
+   ```
+
+#### 3. **Deleting a Node**
+   **Goal**: Remove a node from the list.
+
+   **Steps**:
+   1. If deleting the head, update the `head` to the next node.
+   2. For other nodes, traverse until you find the node before the one to be deleted.
+   3. Update the `next` of the previous node to skip the node to be deleted.
+
+   **Code**:
+   ```java
+   if (head == null) return; // Empty list
+
+   if (head.data == key) { // Deleting the head
+       head = head.next;
+       return;
+   }
+
+   Node current = head;
+   while (current.next != null && current.next.data != key) {
+       current = current.next;
+   }
+
+   if (current.next != null) {
+       current.next = current.next.next; // Skip the node
+   }
+   ```
+
+#### 4. **Reversing a Linked List**
+   **Goal**: Change the direction of the list so that it points backward.
+
+   **Steps**:
+   - Use three pointers: `prev`, `current`, and `next`.
+   - Traverse the list and reverse the pointers.
+
+   **Code**:
+   ```java
+   Node prev = null;
+   Node current = head;
+
+   while (current != null) {
+       Node next = current.next; // Store next node
+       current.next = prev; // Reverse pointer
+       prev = current; // Move prev forward
+       current = next; // Move current forward
+   }
+
+   head = prev; // Update head to new front
+   ```
+
+---
+
+## 2. **Trees**
+
+### What is a Tree?
+A **Tree** is a hierarchical data structure consisting of nodes. The top node is called the **root**, and each node can have child nodes.
+
+### Common Terminology
+- **Root**: The topmost node.
+- **Child**: A node connected below another node.
+- **Parent**: A node connected above another node.
+- **Leaf**: A node with no children.
+- **Height**: The number of edges on the longest path from the root to a leaf.
+- **Depth**: The number of edges from the root to a specific node.
+- **Subtree**: A tree formed by a node and its descendants.
+
+### Types of Trees
+1. **Binary Tree**: Each node has at most two children (left and right).
+2. **Binary Search Tree (BST)**: A binary tree where:
+   - Left child < Parent
+   - Right child > Parent
+3. **Balanced Tree**: A tree where the difference in height between left and right subtrees is minimal.
+
+### Basic Operations
+
+#### 1. **Traversals**
+   Traversal means visiting every node in the tree in a specific order.
+
+   **a. Preorder (Root → Left → Right)**:
+   ```java
+   void preorder(TreeNode root) {
+       if (root == null) return;
+       System.out.print(root.val + " "); // Visit root
+       preorder(root.left); // Visit left
+       preorder(root.right); // Visit right
+   }
+   ```
+
+   **b. Inorder (Left → Root → Right)**:
+   ```java
+   void inorder(TreeNode root) {
+       if (root == null) return;
+       inorder(root.left); // Visit left
+       System.out.print(root.val + " "); // Visit root
+       inorder(root.right); // Visit right
+   }
+   ```
+
+   **c. Postorder (Left → Right → Root)**:
+   ```java
+   void postorder(TreeNode root) {
+       if (root == null) return;
+       postorder(root.left); // Visit left
+       postorder(root.right); // Visit right
+       System.out.print(root.val + " "); // Visit root
+   }
+   ```
+
+#### 2. **Inserting into a Binary Search Tree**
+   **Goal**: Add a value to maintain the BST property.
+
+   **Steps**:
+   - Compare the value to the root.
+   - If smaller, go to the left subtree.
+   - If larger, go to the right subtree.
+   - Repeat until you find an empty spot.
+
+   **Code**:
+   ```java
+   TreeNode insert(TreeNode root, int value) {
+       if (root == null) return new TreeNode(value);
+
+       if (value < root.val) {
+           root.left = insert(root.left, value);
+       } else {
+           root.right = insert(root.right, value);
+       }
+       return root;
+   }
+   ```
+
+#### 3. **Searching in a Binary Search Tree**
+   **Goal**: Check if a value exists in the tree.
+
+   **Code**:
+   ```java
+   boolean search(TreeNode root, int value) {
+       if (root == null) return false; // Not found
+
+       if (root.val == value) return true; // Found
+       else if (value < root.val) return search(root.left, value); // Search left
+       else return search(root.right, value); // Search right
+   }
+   ```
+
+---
+
+## 3. **Backtracking**
+
+### What is Backtracking?
+Backtracking is a technique for solving problems incrementally by trying different possibilities and undoing them if they don't work (like exploring all paths in a maze).
+
+### Key Concepts
+1. **Decision Tree**: Visualize every possible choice as a tree.
+2. **Base Case**: Stop when you've found a solution or can't go further.
+3. **Recursive Steps**: Add choices incrementally.
+4. **Undo Steps**: Backtrack when a path fails.
+
+### Common Problems
+
+#### 1. **Subset Generation**
+Generate all subsets of an array.
+
+**Code**:
+```java
+void subsets(int[] nums, List<Integer> current, int index, List<List<Integer>> result) {
+    if (index == nums.length) {
+        result.add(new ArrayList<>(current)); // Add current subset
+        return;
+    }
+
+    // Include current element
+    current.add(nums[index]);
+    subsets(nums, current, index + 1, result);
+
+    // Exclude current element (backtrack)
+    current.remove(current.size() - 1);
+    subsets(nums, current, index + 1, result);
+}
+```
+
+#### 2. **N-Queens**
+Place `N` queens on an `N x N` chessboard so that no two queens threaten each other.
+
+**Code**:
+```java
+void solveNQueens(int n, List<List<String>> result, int row, boolean[] cols, boolean[] d1, boolean[] d2, List<String> board) {
+    if (row == n) {
+        result.add(new ArrayList<>(board));
+        return;
+    }
+
+    for (int col = 0; col < n; col++) {
+        if (cols[col] || d1[row - col + n - 1] || d2[row + col]) continue;
+
+        char[] rowArray = new char[n];
+        Arrays.fill(rowArray, '.');
+        rowArray[col] = 'Q';
+        board.add(new String(rowArray));
+
+        cols[col] = d1[row - col + n - 1] = d2[row + col] = true;
+
+        solveNQueens(n, result, row + 1, cols, d1, d2, board);
+
+        board.remove(board.size() - 1); // Backtrack
+        cols[col] = d1[row - col + n - 1] = d2[row + col] = false;
+    }
+}
+```
+
+---
+
+Let me know if you'd like examples or deeper explanations of specific parts!
+
